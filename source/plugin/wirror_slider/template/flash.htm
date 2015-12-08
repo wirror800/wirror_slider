@@ -1,0 +1,33 @@
+<!--{block return}-->
+<script type="text/javascript" src="{$template_dir}js/jquery.js"></script>
+<script type="text/javascript" src="{$template_dir}js/swfobject.js"></script>
+<style type="text/css">
+#wirror_slider_container {
+    text-align: center;
+}
+</style>
+<!--span>{$this->engine}{lang wirror_slider:title}</span-->
+<div id="wirror_slider_container" calss="wp cl">
+	<div id="wirror_slider_flash"></div>
+</div>
+<script type="text/javascript">
+	var $$ = jQuery.noConflict();
+	
+	$$(document).ready(function(){
+		var flashvars = {};
+		flashvars.cssSource = "{$template_dir}css/piecemaker.css";
+		flashvars.xmlSource = "{$host}/plugin.php?id=wirror_slider:slider";
+
+		var params = {};
+		params.play = "true";
+		params.menu = "false";
+		params.scale = "showall";
+		params.wmode = "transparent";
+		params.allowfullscreen = "true";
+		params.allowscriptaccess = "always";
+		params.allownetworking = "all";
+
+		swfobject.embedSWF('{$template_dir}flash/piecemaker.swf', 'wirror_slider_flash', '{$width}', '{$height}', '10', null, flashvars, params, null);
+	});
+</script>
+<!--{/block}-->

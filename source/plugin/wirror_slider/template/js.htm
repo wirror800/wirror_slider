@@ -1,0 +1,119 @@
+<!--{eval $num_pos = $width / 2;}-->
+<!--{eval $interval_time = $cycle * 1000;}-->
+<!--{block return}-->
+<script type="text/javascript" src="{$template_dir}js/jquery.js"></script>
+<style type="text/css">
+.scroll_box {
+    height: {$height}px;
+    overflow: hidden;
+    position: relative;
+    width: {$width}px;
+    z-index: 1;
+    margin: 0 auto;
+}
+.scroll_box ul li {
+    display: block;
+    float: left;
+    height: {$height}px;
+    overflow: hidden;
+    position: relative;
+    width: {$width}px;
+}
+#scroll {
+    position: absolute;
+}
+#scroll img {
+    height: {$height}px;
+    width: {$width}px;
+}
+#scroll_num {
+    bottom: 8px;
+    left: {$num_pos}px;
+    position: absolute;
+    z-index: 10;
+}
+#scroll_num li {
+    background: none repeat scroll 0 0 #888686;
+    border: 1px solid #B7B5B5;
+    cursor: default;
+    display: block;
+    float: left;
+    height: 6px;
+    margin: 0 5px;
+    width: 6px;
+}
+#scroll_num li.set {
+    background: none repeat scroll 0 0 #388DDF;
+    border: 1px solid #B7B5B5;
+}
+</style>
+<!--span>{$this->engine}{lang gj_slider:title}</span-->
+<div id="gj_slider_container" calss="wp cl">
+	<div class="scroll_box border">
+	    <div style="position: absolute; top: 0px; left: 0px" id="index_pic">
+	      <ul style="width: 2700px; left: -2025px;" id="scroll" class="ui-sortable">
+			<!--{loop $this->pics $idx $pic}-->
+	        <li style="position: relative; top: 0px; left: 0px">
+				<a hidefocus="true" href="{$pic[link]}" target="_blank">
+					<img id="pic{$idx}" loop="1" src="{$pic[src]}" start="fileopen" height="{$height}" width="{$width}"/>
+				</a>
+			</li>
+	        <!--{/loop}-->
+	      </ul>
+	    </div>
+	    <ul id="scroll_num" class="ui-sortable">
+		  <!--{loop $this->pics $pic}-->
+	      <li class=""></li>
+	      <!--{/loop}-->
+	    </ul>
+	  </div>
+</div>
+<script type="text/javascript">
+	var $$ = jQuery.noConflict();
+	
+	$$(document).ready(function(){
+		scroll_evt();
+	});
+	
+	// rotator
+	function scroll_evt() {
+		 var len  = $$("#scroll_num > li").length;
+		 var index = 1;
+		 $$("#scroll").width({$width}*len);
+		 $$("#scroll_num li").mouseover(function(){
+			index  =   $$("#scroll_num li").index(this);
+			showImg(index);
+		 });	
+		 //滑入 停止动画，滑出开始动画.
+		 $$('#index_pic').bind("mouseenter",function(){ 
+			  if(MyTime){
+				 clearInterval(MyTime);
+			  }
+		 });
+		 $$('#index_pic').bind("mouseleave",function(){
+			 MyTime = setInterval(function(){
+				index++;
+				if(index==len){index=0}
+				showImg(index);
+			 } , {$interval_time});
+		 })
+		 //自动开始
+		 var MyTime = setInterval(function(){
+			showImg(index)
+			index++;
+			if(index==len){index=0;}
+		 } , {$interval_time});
+		 
+		 var showImg=function(i){
+			$$("#scroll").stop(true,false).animate({left : -{$width}*i},300);
+			$$("#scroll_num li")
+			.eq(i).addClass("set")
+			.siblings().removeClass("set");
+			if(!$$("#pic"+i).attr("src")){
+				$$("#pic"+i).attr("src",$$("#pic"+i).attr("original"))
+			}
+		}
+		showImg(0);
+	}
+</script>
+<!--{/block}-->
